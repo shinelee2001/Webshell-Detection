@@ -1,0 +1,11 @@
+*.exe
+*.txt
+*.php
+*.db
+*.o
+*.json
+webshellDetection.py
+md5.*
+
+malwares/
+sqlite-amalgamation-3450100/
