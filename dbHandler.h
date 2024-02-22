@@ -6,17 +6,21 @@
 #include <string>
 
 class DBHandler {
-public:
+  public:
     DBHandler(const std::string& db_file);
     ~DBHandler();
 
     bool openDatabase();
-    bool createDetectedTable(); // Creates DETECTED_WEBSHELLS DB
-    bool insertDetectedData(const std::string& file_path, const std::string& hash);
 
-    bool createdSignatureTable(); // Creates SIGNATURE_WEBSHELLS DB
+    // Handling DETECTED_WEBSHELLS TABLE
+    bool createDetectedTable(); // Creates DETECTED_WEBSHELLS TABLE
+    bool insertDetectedData(const std::string& file_path, const std::string& hash); // Stores the detected data
 
-private:
+    // Handling SIGNATURE_WEBSHELLS TABLE
+    bool createdSignatureTable(); // Creates SIGNATURE_WEBSHELLS TABLE
+    bool insertSignatrues(); // Stores the signatures
+
+  private:
     sqlite3* db;
     std::string db_file;
 };

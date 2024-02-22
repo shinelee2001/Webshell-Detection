@@ -2,6 +2,8 @@
 *.txt
 *.php
 *.db
+*.o
+*.json
 webshellDetection.py
 
 malwares/

@@ -84,7 +84,9 @@ int main() {
     DBHandler dbHandler("WEBSHELLS.db");
     dbHandler.openDatabase();
     dbHandler.createDetectedTable();
+    
     dbHandler.createdSignatureTable();
+    dbHandler.insertSignatrues();
 
 	check_directory(directory, dbHandler);
 }

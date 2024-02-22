@@ -1,4 +1,6 @@
 #include "dbHandler.h"
+#include <fstream>
+#include <string>
 
 DBHandler::DBHandler(const std::string& db_file):
     db{nullptr}, db_file{db_file} {}
@@ -30,20 +32,7 @@ bool DBHandler::createDetectedTable() {
     bool isOk = (ret == SQLITE_OK);
     if (!isOk) {
         std::cerr << "Error creating table" << std::endl;
-    }
-    return isOk;
-}
-
-bool DBHandler::createdSignatureTable() {
-    const char* create_table_sql = 
-        "CREATE TABLE IF NOT EXISTS SIGNATURE_WEBSHELLS ("
-        "id INTEGER PRIMARY KEY,"
-        "hash TEXT NOT NULL);";
-    
-    int ret = sqlite3_exec(db,create_table_sql, nullptr, nullptr, nullptr);
-    bool isOk = (ret == SQLITE_OK);
-    if (!isOk) {
-        std::cerr << "Error creating table" << std::endl;
+        return !isOk;
     }
     return isOk;
 }
@@ -63,7 +52,47 @@ bool DBHandler::insertDetectedData(const std::string& file_path, const std::stri
 
     // Execute Insert Statement
     sqlite3_step(stmt);
+
     sqlite3_finalize(stmt);
 
+    return true;
+}
+
+
+bool DBHandler::createdSignatureTable() {
+    const char* create_table_sql = 
+        "CREATE TABLE IF NOT EXISTS SIGNATURE_WEBSHELLS ("
+        "id INTEGER PRIMARY KEY,"
+        "hash TEXT NOT NULL);";
+    
+    int ret = sqlite3_exec(db,create_table_sql, nullptr, nullptr, nullptr);
+    bool isOk = (ret == SQLITE_OK);
+    if (!isOk) {
+        std::cerr << "Error creating table" << std::endl;
+        return !isOk;
+    }
+    return isOk;
+}
+
+bool DBHandler::insertSignatrues() {
+    const char* insert_sql = "INSERT INTO SIGNATURE_WEBSHELLS (hash) VALUES (?);";
+    sqlite3_stmt* stmt;
+
+    // Prepare the executet statement
+    int ret = sqlite3_prepare_v2(db, insert_sql, -1, &stmt, nullptr);
+    if (ret != SQLITE_OK) {
+        std::cerr << "Insert Statement cannot be resolved" << std::endl;
+        return false;
+    }
+
+    // Read hashes from output.txt file
+    std::ifstream file {"./malwares/output.txt"};
+    std::string hash;
+    while (file >> hash) {
+        // Execute insert statement
+        sqlite3_bind_text(stmt, 1, hash.c_str(), -1, SQLITE_STATIC);
+        sqlite3_step(stmt);
+    }
+    sqlite3_finalize(stmt);
     return true;
 }
