@@ -19,7 +19,7 @@ bool DBHandler::openDatabase() {
     return ret == SQLITE_OK;
 }
 
-bool DBHandler::createTable() {
+bool DBHandler::createDetectedTable() {
     const char* create_table_sql = 
         "CREATE TABLE IF NOT EXISTS DETECTED_WEBSHELLS ("
         "id INTEGER PRIMARY KEY,"
@@ -34,7 +34,21 @@ bool DBHandler::createTable() {
     return isOk;
 }
 
-bool DBHandler::insertData(const std::string& file_path, const std::string& hash) {
+bool DBHandler::createdSignatureTable() {
+    const char* create_table_sql = 
+        "CREATE TABLE IF NOT EXISTS SIGNATURE_WEBSHELLS ("
+        "id INTEGER PRIMARY KEY,"
+        "hash TEXT NOT NULL);";
+    
+    int ret = sqlite3_exec(db,create_table_sql, nullptr, nullptr, nullptr);
+    bool isOk = (ret == SQLITE_OK);
+    if (!isOk) {
+        std::cerr << "Error creating table" << std::endl;
+    }
+    return isOk;
+}
+
+bool DBHandler::insertDetectedData(const std::string& file_path, const std::string& hash) {
     const char* insert_sql = "INSERT INTO DETECTED_WEBSHELLS (file_path, hash) VALUES (?, ?);";
     sqlite3_stmt* stmt;
     

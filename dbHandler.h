@@ -11,8 +11,10 @@ public:
     ~DBHandler();
 
     bool openDatabase();
-    bool createTable(); // Creates DETECTED_WEBSHELLS DB
-    bool insertData(const std::string& file_path, const std::string& hash);
+    bool createDetectedTable(); // Creates DETECTED_WEBSHELLS DB
+    bool insertDetectedData(const std::string& file_path, const std::string& hash);
+
+    bool createdSignatureTable(); // Creates SIGNATURE_WEBSHELLS DB
 
 private:
     sqlite3* db;

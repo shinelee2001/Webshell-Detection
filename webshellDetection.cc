@@ -47,8 +47,9 @@ bool detect_webshell(const std::string &file_path) {
         return true;
     }
     return false;
-
 }
+
+// check the hash code in the database
 
 void check_directory(const std::string &directory, DBHandler &db) {
     for (const auto &entry : fs::recursive_directory_iterator(directory)) {
@@ -64,7 +65,7 @@ void check_directory(const std::string &directory, DBHandler &db) {
                 MD5 hasher;
                 std::string md5_hash = hasher.hash(file_contents);
 
-                if (!db.insertData(file_path, md5_hash)) {
+                if (!db.insertDetectedData(file_path, md5_hash)) {
                     std::cerr << "Failed to store data" << std::endl;
                 }
             }
@@ -82,7 +83,8 @@ int main() {
     // Create DB
     DBHandler dbHandler("WEBSHELLS.db");
     dbHandler.openDatabase();
-    dbHandler.createTable();
+    dbHandler.createDetectedTable();
+    dbHandler.createdSignatureTable();
 
 	check_directory(directory, dbHandler);
 }
