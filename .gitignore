@@ -1,7 +1,7 @@
-/detector.exe
-/error.txt
-/pgm.exe
-/test.exe
-/webshellDetection.py
-/webshellExample.php
-/WEBSHELLS.db
+*.exe
+*.txt
+*.php
+*.db
+webshellDetection.py
+
+malwares/
